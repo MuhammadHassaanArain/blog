@@ -1,5 +1,4 @@
 import Link from "next/link";
-
 export default async function Blog() {
   let fetchData = await fetch("https://jsonplaceholder.typicode.com/posts");
   let res = await fetchData.json();
