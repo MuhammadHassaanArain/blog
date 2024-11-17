@@ -1,16 +1,32 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function Home() {
   const [comment, setComment] = useState("");
   const [newcomment, setNewcomment] = useState<string[]>([]);
+
+  useEffect(() => {
+    const savedComments = localStorage.getItem("comments");
+    if (savedComments) {
+      setNewcomment(JSON.parse(savedComments));
+    }
+  }, []);
+
   let handlechange = (event: any) => {
     event.preventDefault();
     if (comment.trim()) {
-      setNewcomment([...newcomment, comment]);
+      const updatedComments = [...newcomment, comment];
+      setNewcomment(updatedComments);
       setComment("");
+
+      localStorage.setItem("comments", JSON.stringify(updatedComments));
     }
   };
+  let clearComments = () => {
+    localStorage.removeItem("comments");
+    setNewcomment([]);
+  };
+
   return (
     <div className="bg-orange-400 flex justify-center p-3">
       <div className="bg-orange-300 w-4/5  sm:w-2/4 p-8 rounded-md">
@@ -41,15 +57,27 @@ function Home() {
                   />
                 </form>
               </div>
-              <div className="px-5">
-                <button
-                  type="submit"
-                  onClick={handlechange}
-                  className="bg-orange-600 p-2 rounded-3xl px-4 my-4"
-                >
-                  Post
-                </button>
-              </div>
+
+              <main className="sm:flex">
+                <div className="px-5">
+                  <button
+                    type="submit"
+                    onClick={clearComments}
+                    className="bg-orange-600 p-2 rounded-3xl px-4 my-4"
+                  >
+                    Delete Comments
+                  </button>
+                </div>
+                <div className="px-5">
+                  <button
+                    type="submit"
+                    onClick={handlechange}
+                    className="bg-orange-600 p-2 rounded-3xl px-4 my-4"
+                  >
+                    Post
+                  </button>
+                </div>
+              </main>
             </div>
             <div>
               {newcomment.map((item: any, index: number) => {
